@@ -1,118 +1,144 @@
-# Dhaval Dabhi
+# 💎 Shiv Gems \| Full Stack E-Commerce Platform
 
-### Full Stack Developer \| DevOps & Cloud Enthusiast
-:::
+Welcome to **Shiv Gems** --- a modern full-stack MERN e-commerce
+application built for a diamond jewellery business. 🚀
 
-------------------------------------------------------------------------
-
-# 💎 Shiv Gems --- Full Stack Diamond Jewellery E-Commerce Platform
-
-A modern full-stack MERN e-commerce application with authentication,
-admin dashboard, cart system, and checkout workflow.
+This platform demonstrates secure authentication, admin management, cart
+persistence, and a complete checkout workflow.
 
 ------------------------------------------------------------------------
 
-## 🚀 Tech Stack
+## ✨ Features
+
+-   Secure JWT Authentication\
+-   Role-based Admin Dashboard\
+-   Add / Edit / Delete Products\
+-   Persistent Cart (LocalStorage + Backend Sync)\
+-   Checkout System (Card / UPI / Bank Transfer UI)\
+-   Responsive Design (Mobile, Tablet, Desktop)\
+-   Clean REST API Architecture\
+-   Proper CORS & Proxy Configuration
+
+------------------------------------------------------------------------
+
+## 🛠️ Tech Stack
 
 ### Frontend
 
--   React + TypeScript
--   Tailwind CSS
--   Axios
--   React Router
--   Context API
+-   React + TypeScript\
+-   Tailwind CSS\
+-   Axios\
+-   React Router\
+-   Context API\
 -   Vite
 
 ### Backend
 
--   Node.js
--   Express.js
--   MongoDB
--   Mongoose
+-   Node.js\
+-   Express.js\
+-   MongoDB\
+-   Mongoose\
 -   JWT Authentication
 
-------------------------------------------------------------------------
-## 📁 Project Structure
+### Deployment
 
-```bash
+-   Frontend: Vercel / Netlify\
+-   Backend: Render / Railway\
+-   Database: MongoDB Atlas
+
+------------------------------------------------------------------------
+
+## 🚀 Getting Started
+
+### 1️⃣ Clone the Repository
+
+``` bash
+git clone https://github.com/DabhiDhaval/Shiv-Gems.git
+cd Shiv-Gems
+```
+
+------------------------------------------------------------------------
+
+### 2️⃣ Backend Setup
+
+``` bash
+cd Backend
+npm install
+```
+
+Create a `.env` file inside the **Backend** folder:
+
+``` env
+PORT=8000
+MONGO_URI=mongodb://localhost:27017/shivgems
+JWT_SECRET=your_strong_secret_here
+FRONTEND_URL=http://localhost:5173
+```
+
+Start backend server:
+
+``` bash
+npm run dev
+```
+
+------------------------------------------------------------------------
+
+### 3️⃣ Frontend Setup
+
+``` bash
+cd Frontend
+npm install
+npm run dev
+```
+
+------------------------------------------------------------------------
+
+### 4️⃣ Build for Production
+
+``` bash
+npm run build
+```
+
+------------------------------------------------------------------------
+
+## 📂 Folder Structure
+
+``` bash
 Shiv-Gems/
-│
-├── Backend/                # Node.js + Express API
+├── Backend/
 │   ├── controllers/
 │   ├── routes/
 │   ├── models/
 │   ├── middleware/
-│   ├── config/
 │   └── server.js
 │
-├── Frontend/               # React + Vite Application
+├── Frontend/
 │   ├── src/
 │   │   ├── pages/
 │   │   ├── components/
 │   │   ├── context/
-│   │   ├── utils/
-│   │   └── App.tsx
+│   │   └── utils/
 │   └── vite.config.ts
 │
 ├── .gitignore
 ├── package.json
-├── package-lock.json
 └── README.md
-------------------------------------------------------------------------
-
-## ⚙️ Setup Instructions
-
-### Backend Setup
-
-cd Backend\
-npm install
-
-Create `.env` file:
-
-PORT=8000\
-MONGO_URI=mongodb://localhost:27017/shivgems\
-JWT_SECRET=your_strong_secret_here\
-FRONTEND_URL=http://localhost:5173
-
-Run backend:
-
-npm run dev
+```
 
 ------------------------------------------------------------------------
 
-### Frontend Setup
+## 🤝 Connect With Me
 
-cd Fronted\
-npm install\
-npm run dev
-
-------------------------------------------------------------------------
-
-## 🔐 Features
-
--   JWT Authentication
--   Admin Dashboard
--   Add/Edit/Delete Products
--   Persistent Cart (LocalStorage + Backend Sync)
--   Checkout Page (Card / UPI / Bank Transfer)
--   Responsive UI
--   API Proxy Setup
--   CORS Configuration
+-   LinkedIn: https://www.linkedin.com/in/dabhi-dhaval/\
+-   Instagram: https://www.instagram.com/dabhi_dhaval7\
+-   GitHub: https://github.com/DabhiDhaval
 
 ------------------------------------------------------------------------
 
-## 📦 Deployment
+## 📄 License
 
-Frontend: Vercel / Netlify\
-Backend: Render / Railway\
-Database: MongoDB Atlas
+This project is licensed under the MIT License.
 
 ------------------------------------------------------------------------
 
-## 📜 License
-
-MIT License
-
-------------------------------------------------------------------------
-
-© 2026 Dhaval Dabhi. All Rights Reserved.
+> Made with ❤️ by Dhaval Dabhi
