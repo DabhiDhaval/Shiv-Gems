@@ -1,6 +1,3 @@
-::: {align="center"}
-`<img src="https://github.com/DabhiDhaval.png" width="160" style="border-radius: 50%;" />`{=html}
-
 # Dhaval Dabhi
 
 ### Full Stack Developer \| DevOps & Cloud Enthusiast
