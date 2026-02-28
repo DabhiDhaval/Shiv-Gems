@@ -32,6 +32,9 @@ admin dashboard, cart system, and checkout workflow.
 -   JWT Authentication
 
 ------------------------------------------------------------------------
+## 📁 Project Structure
+
+```bash
 Shiv-Gems/
 │
 ├── Backend/                # Node.js + Express API
