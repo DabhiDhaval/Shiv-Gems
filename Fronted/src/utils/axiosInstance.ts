@@ -1,11 +1,16 @@
 import axios from 'axios';
 
-// Use relative URL so Vite proxy works in development,
-// and set VITE_API_URL in production deployment
-const baseURL = (import.meta as any).env?.VITE_API_URL || '/api';
+// If VITE_API_URL exists → production
+// If not → development (Vite proxy)
+const API_URL = import.meta.env.VITE_API_URL;
+
+const baseURL = API_URL
+  ? `${API_URL}/api`
+  : '/api';
 
 const axiosInstance = axios.create({
   baseURL,
+  withCredentials: true,
 });
 
 // Attach Authorization token to every request
@@ -17,7 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401 globally - clear stale tokens
+// Handle 401 globally
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
