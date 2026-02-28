@@ -1,14 +1,18 @@
 const Order = require("../models/Order");
 
 // ===============================
-// CREATE ORDER (From Frontend Cart)
+// CREATE ORDER (Frontend Cart)
 // ===============================
 const createOrder = async (req, res) => {
   try {
+    console.log("NEW BACKEND VERSION RUNNING");
+    
     const userId = req.user.id;
     const { items, totalAmount, shippingAddress } = req.body;
 
-    // Validate items
+    console.log("Incoming Order Payload:", req.body);
+
+    // Validate
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: "No items provided" });
     }
@@ -17,25 +21,25 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Invalid total amount" });
     }
 
-    const order = new Order({
+    const order = await Order.create({
       userId,
       items,
       totalAmount,
       shippingAddress: shippingAddress || "",
-      status: "pending"
+      status: "pending",
     });
-
-    await order.save();
 
     res.status(201).json({
       message: "Order created successfully",
       orderId: order._id,
-      order
+      order,
     });
 
   } catch (error) {
-    console.error("Error creating order:", error);
-    res.status(500).json({ message: "Failed to create order" });
+    console.error("Create Order Error:", error);
+    res.status(500).json({
+      message: error.message || "Failed to create order"
+    });
   }
 };
 
@@ -44,16 +48,13 @@ const createOrder = async (req, res) => {
 // ===============================
 const getOrders = async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    const orders = await Order.find({ userId })
-      .populate("items.productId")
+    const orders = await Order.find({ userId: req.user.id })
       .sort({ createdAt: -1 });
 
     res.status(200).json(orders);
 
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    console.error("Get Orders Error:", error);
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
@@ -64,14 +65,12 @@ const getOrders = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("userId")
-      .populate("items.productId")
       .sort({ createdAt: -1 });
 
     res.status(200).json(orders);
 
   } catch (error) {
-    console.error("Error fetching all orders:", error);
+    console.error("Get All Orders Error:", error);
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
