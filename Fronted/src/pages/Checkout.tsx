@@ -49,15 +49,28 @@ const Checkout = () => {
     try {
       const shippingAddress = `${shipping.firstName} ${shipping.lastName}, ${shipping.address}, ${shipping.city}, ${shipping.state} ${shipping.pincode}, ${shipping.country}`;
 
-      const orderPayload = {
-        items: cart.map(item => ({
-          productId: item.id,   // must match cart structure
+      // 🔥 VALIDATE + FIX PRODUCT IDS
+      const formattedItems = cart.map(item => {
+        const productId = String(item.id);
+
+        if (!productId || productId.length !== 24) {
+          throw new Error("Invalid product ID detected. Please clear cart and try again.");
+        }
+
+        return {
+          productId,
           quantity: item.quantity,
           price: item.price
-        })),
+        };
+      });
+
+      const orderPayload = {
+        items: formattedItems,
         totalAmount: total,
         shippingAddress
       };
+
+      console.log("Sending Order Payload:", orderPayload);
 
       let generatedOrderId = '';
 
@@ -75,7 +88,7 @@ const Checkout = () => {
       setOrderSuccess(true);
 
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Order failed. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Order failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -121,51 +134,35 @@ const Checkout = () => {
           <h2 className="text-xl font-semibold mb-6">Shipping Details</h2>
 
           <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="First Name *"
+            <input type="text" placeholder="First Name *" required
               value={shipping.firstName}
               onChange={e => setShipping({ ...shipping, firstName: e.target.value })}
               className="border rounded-lg px-3 py-2"
-              required
             />
-            <input
-              type="text"
-              placeholder="Last Name"
+            <input type="text" placeholder="Last Name"
               value={shipping.lastName}
               onChange={e => setShipping({ ...shipping, lastName: e.target.value })}
               className="border rounded-lg px-3 py-2"
             />
-            <input
-              type="text"
-              placeholder="Address *"
+            <input type="text" placeholder="Address *" required
               value={shipping.address}
               onChange={e => setShipping({ ...shipping, address: e.target.value })}
               className="border rounded-lg px-3 py-2 col-span-2"
-              required
             />
-            <input
-              type="text"
-              placeholder="City *"
+            <input type="text" placeholder="City *" required
               value={shipping.city}
               onChange={e => setShipping({ ...shipping, city: e.target.value })}
               className="border rounded-lg px-3 py-2"
-              required
             />
-            <input
-              type="text"
-              placeholder="State"
+            <input type="text" placeholder="State"
               value={shipping.state}
               onChange={e => setShipping({ ...shipping, state: e.target.value })}
               className="border rounded-lg px-3 py-2"
             />
-            <input
-              type="text"
-              placeholder="Pincode *"
+            <input type="text" placeholder="Pincode *" required
               value={shipping.pincode}
               onChange={e => setShipping({ ...shipping, pincode: e.target.value })}
               className="border rounded-lg px-3 py-2"
-              required
             />
           </div>
 
