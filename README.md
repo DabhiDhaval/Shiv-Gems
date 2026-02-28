@@ -33,12 +33,28 @@ admin dashboard, cart system, and checkout workflow.
 
 ------------------------------------------------------------------------
 
-## 📁 Project Structure
-
-Shiv-Gems/ ├── Backend/ │ ├── controllers/ │ ├── routes/ │ ├── models/ │
-├── middleware/ │ └── server.js │ └── Fronted/ ├── src/ │ ├── pages/ │
-├── components/ │ ├── context/ │ └── utils/ └── vite.config.ts
-
+Shiv-Gems/
+│
+├── Backend/                # Node.js + Express API
+│   ├── controllers/
+│   ├── routes/
+│   ├── models/
+│   ├── middleware/
+│   ├── config/
+│   └── server.js
+│
+├── Frontend/               # React + Vite Application
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── utils/
+│   │   └── App.tsx
+│   └── vite.config.ts
+│
+├── .gitignore
+├── README.md
+└── package.json
 ------------------------------------------------------------------------
 
 ## ⚙️ Setup Instructions
