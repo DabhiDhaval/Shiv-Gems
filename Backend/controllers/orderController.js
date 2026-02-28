@@ -1,83 +1,83 @@
 const Order = require("../models/Order");
-const Cart = require("../models/Cart");
 
-// Create an order from cart items
+// ===============================
+// CREATE ORDER (From Frontend Cart)
+// ===============================
 const createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { shippingAddress } = req.body;
+    const { items, totalAmount, shippingAddress } = req.body;
 
-    // Get cart items
-    const cartItems = await Cart.find({ userId }).populate("productId");
-
-    if (!cartItems.length) {
-      return res.status(400).json({ message: "Cart is empty" });
+    // Validate items
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "No items provided" });
     }
 
-    // Calculate total and prepare order items
-    let totalAmount = 0;
-    const orderItems = cartItems.map((item) => {
-      totalAmount += item.productId.price * item.quantity;
-      return {
-        productId: item.productId._id,
-        quantity: item.quantity,
-        price: item.productId.price,
-      };
-    });
+    if (!totalAmount || totalAmount <= 0) {
+      return res.status(400).json({ message: "Invalid total amount" });
+    }
 
-    // Create order
     const order = new Order({
       userId,
-      items: orderItems,
+      items,
       totalAmount,
-      shippingAddress: shippingAddress || "Not provided",
-      status: "completed",
+      shippingAddress: shippingAddress || "",
+      status: "pending"
     });
 
     await order.save();
 
-    // Clear cart
-    await Cart.deleteMany({ userId });
-
     res.status(201).json({
       message: "Order created successfully",
-      order,
-      total: totalAmount,
+      orderId: order._id,
+      order
     });
+
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ message: "Failed to create order" });
   }
 };
 
-// Get all orders for a user
+// ===============================
+// GET USER ORDERS
+// ===============================
 const getOrders = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const orders = await Order.find({ userId })
       .populate("items.productId")
       .sort({ createdAt: -1 });
 
-    res.json(orders);
+    res.status(200).json(orders);
+
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
 
-// Get all orders (admin)
+// ===============================
+// GET ALL ORDERS (Admin)
+// ===============================
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("userId", "email name")
+      .populate("userId")
       .populate("items.productId")
       .sort({ createdAt: -1 });
 
-    res.json(orders);
+    res.status(200).json(orders);
+
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    console.error("Error fetching all orders:", error);
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
 
-module.exports = { createOrder, getOrders, getAllOrders };
+module.exports = {
+  createOrder,
+  getOrders,
+  getAllOrders,
+};
