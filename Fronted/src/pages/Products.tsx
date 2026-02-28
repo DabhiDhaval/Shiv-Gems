@@ -25,6 +25,8 @@ const Products = () => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchProducts = () => {
     axiosInstance.get<Product[]>('/products')
       .then(res => {
@@ -50,11 +52,9 @@ const Products = () => {
   const handleAddToCart = async (product: Product) => {
     setActionError(null);
 
-    // If user is authenticated and DB is available, add via API
     if (isAuthenticated && !usingMock) {
       try {
         await axiosInstance.post('/cart', { productId: product._id, quantity: 1 });
-        // Also update local cart context for navbar badge
         addToCart({ id: product._id, name: product.name, price: product.price, quantity: 1, image: product.image });
         setAddedProductId(product._id);
         setTimeout(() => setAddedProductId(null), 2000);
@@ -63,11 +63,16 @@ const Products = () => {
         setActionError(msg);
       }
     } else {
-      // Fallback: add to local cart context (works without backend)
       addToCart({ id: product._id, name: product.name, price: product.price, quantity: 1, image: product.image });
       setAddedProductId(product._id);
       setTimeout(() => setAddedProductId(null), 2000);
     }
+  };
+
+  const getImageUrl = (image: string) => {
+    if (!image) return '';
+    if (image.startsWith('http')) return image;
+    return `${API_URL}${image}`;
   };
 
   return (
@@ -101,7 +106,6 @@ const Products = () => {
         </div>
       )}
 
-      {/* Search */}
       <div className="flex items-center gap-3 mb-8 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm max-w-md">
         <Search className="h-5 w-5 text-gray-400 flex-shrink-0" />
         <input
@@ -124,23 +128,35 @@ const Products = () => {
             >
               <Link to={`/products/${product._id}`}>
                 <img
-                  src={product.image}
+                  src={getImageUrl(product.image)}
                   alt={product.name}
                   className="w-full h-56 object-cover"
                 />
               </Link>
+
               <div className="p-5">
                 <Link to={`/products/${product._id}`}>
                   <h3 className="text-lg font-semibold mb-1 hover:text-blue-600 transition-colors">
                     {product.name}
                   </h3>
                 </Link>
-                <p className="text-gray-500 text-sm mb-3 line-clamp-2">{product.description}</p>
-                <p className="text-sm text-gray-400 mb-3">
-                  Stock: <span className={product.stock > 0 ? 'text-green-600 font-medium' : 'text-red-500'}>{product.stock > 0 ? product.stock : 'Out of stock'}</span>
+
+                <p className="text-gray-500 text-sm mb-3 line-clamp-2">
+                  {product.description}
                 </p>
+
+                <p className="text-sm text-gray-400 mb-3">
+                  Stock: 
+                  <span className={product.stock > 0 ? 'text-green-600 font-medium' : 'text-red-500'}>
+                    {product.stock > 0 ? ` ${product.stock}` : ' Out of stock'}
+                  </span>
+                </p>
+
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-blue-600">${product.price.toLocaleString()}</span>
+                  <span className="text-2xl font-bold text-blue-600">
+                    ${product.price.toLocaleString()}
+                  </span>
+
                   <button
                     onClick={() => handleAddToCart(product)}
                     disabled={product.stock === 0}
@@ -159,6 +175,7 @@ const Products = () => {
                     )}
                   </button>
                 </div>
+
               </div>
             </div>
           ))}

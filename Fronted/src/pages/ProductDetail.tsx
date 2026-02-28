@@ -27,6 +27,8 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchProduct = () => {
     if (!id) {
       setError("Product ID is missing");
@@ -35,6 +37,7 @@ const ProductDetail = () => {
     }
 
     setLoading(true);
+
     axiosInstance.get<Product>(`/products/${id}`)
       .then(res => {
         setProduct(res.data);
@@ -54,17 +57,24 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!product) return;
+
     setActionError(null);
 
-    // Always update local cart context
-    addToCart({ id: product._id, name: product.name, price: product.price, quantity: 1, image: product.image });
+    addToCart({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.image
+    });
 
-    // Also sync with backend if authenticated and not mock
     if (isAuthenticated && !usingMock) {
       try {
-        await axiosInstance.post('/cart', { productId: product._id, quantity: 1 });
+        await axiosInstance.post('/cart', {
+          productId: product._id,
+          quantity: 1
+        });
       } catch (err: any) {
-        // local cart already updated; just show warning
         console.warn('Backend cart sync failed:', err.response?.data?.message);
       }
     }
@@ -95,8 +105,16 @@ const ProductDetail = () => {
     );
   }
 
+  const imageUrl =
+    product?.image?.startsWith("http")
+      ? product.image
+      : product?.image
+      ? `${API_URL}${product.image}`
+      : "";
+
   return (
     <div className="max-w-4xl mx-auto p-6">
+
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-6"
@@ -107,7 +125,10 @@ const ProductDetail = () => {
       {usingMock && (
         <div className="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 py-3 rounded mb-4 flex justify-between items-center">
           <span>Showing sample product.</span>
-          <button onClick={fetchProduct} className="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700">
+          <button
+            onClick={fetchProduct}
+            className="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700"
+          >
             Retry
           </button>
         </div>
@@ -121,23 +142,28 @@ const ProductDetail = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <img
-      src={
-          product?.image?.startsWith("http")
-          ? product.image
-          : product?.image
-          ? `http://localhost:8000${product.image}`
-          : ""
-          }
-  alt={product?.name}
-  className="w-full h-56 object-cover"
-/>
+        
+        <img
+          src={imageUrl}
+          alt={product?.name}
+          className="w-full h-56 object-cover rounded-lg"
+        />
+
         <div className="space-y-4">
           <h1 className="text-3xl font-bold">{product?.name}</h1>
           <p className="text-gray-600 leading-relaxed">{product?.description}</p>
-          <p className="text-3xl font-bold text-blue-600">${product?.price.toLocaleString()}</p>
-          <p className={`text-sm font-medium ${product?.stock && product.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
-            {product?.stock && product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+          <p className="text-3xl font-bold text-blue-600">
+            ${product?.price.toLocaleString()}
+          </p>
+
+          <p className={`text-sm font-medium ${
+            product?.stock && product.stock > 0
+              ? 'text-green-600'
+              : 'text-red-500'
+          }`}>
+            {product?.stock && product.stock > 0
+              ? `In Stock (${product.stock} available)`
+              : 'Out of Stock'}
           </p>
 
           <button
@@ -152,23 +178,24 @@ const ProductDetail = () => {
             }`}
           >
             {added ? (
-              <><CheckCircle className="h-5 w-5" /> Added to Cart!</>
+              <>
+                <CheckCircle className="h-5 w-5" />
+                Added to Cart!
+              </>
             ) : (
-              <><ShoppingCart className="h-5 w-5" /> Add to Cart</>
+              <>
+                <ShoppingCart className="h-5 w-5" />
+                Add to Cart
+              </>
             )}
           </button>
 
           <div className="border-t pt-4 space-y-2">
-            <p className="text-sm text-gray-500 flex items-center gap-2">
-              <span className="text-green-500">✓</span> GIA Certified
-            </p>
-            <p className="text-sm text-gray-500 flex items-center gap-2">
-              <span className="text-green-500">✓</span> Free insured shipping
-            </p>
-            <p className="text-sm text-gray-500 flex items-center gap-2">
-              <span className="text-green-500">✓</span> 30-day returns
-            </p>
+            <p className="text-sm text-gray-500">✓ GIA Certified</p>
+            <p className="text-sm text-gray-500">✓ Free insured shipping</p>
+            <p className="text-sm text-gray-500">✓ 30-day returns</p>
           </div>
+
         </div>
       </div>
     </div>
