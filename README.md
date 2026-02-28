@@ -32,7 +32,6 @@ admin dashboard, cart system, and checkout workflow.
 -   JWT Authentication
 
 ------------------------------------------------------------------------
-
 Shiv-Gems/
 │
 ├── Backend/                # Node.js + Express API
@@ -53,8 +52,9 @@ Shiv-Gems/
 │   └── vite.config.ts
 │
 ├── .gitignore
-├── README.md
-└── package.json
+├── package.json
+├── package-lock.json
+└── README.md
 ------------------------------------------------------------------------
 
 ## ⚙️ Setup Instructions
